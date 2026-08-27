@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FlyRank Refresh Opportunity Model — Research Paper</title>
+<style>
+  :root {
+    --bg: #f7f8fa;
+    --card-bg: #ffffff;
+    --text: #16232a;
+    --muted: #5c6b73;
+    --accent: #2c6fbb;
+    --border: #e2e6ea;
+    --highlight: #f0f5fb;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.65;
+  }
+  header {
+    background: linear-gradient(135deg, #16232a 0%, #2c6fbb 100%);
+    color: #fff;
+    padding: 56px 24px 48px;
+    text-align: center;
+  }
+  header .repo { font-size: 13px; opacity: 0.8; letter-spacing: 0.5px; }
+  header h1 { font-size: 34px; margin: 14px 0 8px; font-weight: 700; }
+  header .subtitle { font-size: 17px; opacity: 0.9; font-weight: 400; }
+  .container { max-width: 880px; margin: 0 auto; padding: 0 20px; }
+  section {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    margin: 28px auto;
+    padding: 36px 40px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+  }
+  section h2 {
+    font-size: 22px;
+    color: var(--accent);
+    border-bottom: 2px solid var(--border);
+    padding-bottom: 10px;
+    margin-bottom: 18px;
+  }
+  section h3 { font-size: 17px; margin: 20px 0 8px; color: #27343b; }
+  p, li { margin-bottom: 10px; color: #2d3740; }
+  ul, ol { padding-left: 22px; margin-bottom: 14px; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0;
+    font-size: 14px;
+  }
+  th, td {
+    padding: 9px 12px;
+    border: 1px solid var(--border);
+    text-align: left;
+  }
+  th { background: #eef3f8; color: #27343b; font-weight: 600; }
+  td:nth-child(n+2), th:nth-child(n+2) { text-align: right; }
+  tr:nth-child(even) td { background: #fafbfc; }
+  .best { background: #e8f5e9 !important; font-weight: 600; }
+  .chart-box {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px;
+    margin: 16px 0;
+    overflow-x: auto;
+    text-align: center;
+  }
+  .chart-box svg { max-width: 100%; height: auto; }
+  .chart-caption { font-size: 13px; color: var(--muted); margin-top: 6px; font-style: italic; }
+  .metric-pill {
+    display: inline-block;
+    background: var(--highlight);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 4px 14px;
+    margin: 2px 4px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--accent);
+  }
+  .tag {
+    display: inline-block;
+    background: #eef3f8;
+    color: #2c6fbb;
+    border-radius: 4px;
+    padding: 2px 8px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .warning {
+    background: #fff8e6;
+    border-left: 4px solid #e6a817;
+    padding: 12px 16px;
+    border-radius: 0 8px 8px 0;
+    margin: 14px 0;
+    font-size: 14px;
+  }
+  .link { color: var(--accent); }
+  footer {
+    text-align: center;
+    padding: 36px 20px;
+    color: var(--muted);
+    font-size: 13px;
+    border-top: 1px solid var(--border);
+    margin-top: 20px;
+  }
+  footer a { color: var(--accent); }
+  .abstract-block {
+    background: var(--highlight);
+    border-radius: 8px;
+    padding: 18px 22px;
+    margin: 14px 0;
+    font-style: italic;
+  }
+  .kpi-row { display: flex; gap: 12px; flex-wrap: wrap; margin: 16px 0; }
+  .kpi {
+    flex: 1;
+    min-width: 140px;
+    background: var(--highlight);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 16px;
+    text-align: center;
+  }
+  .kpi .num { font-size: 26px; font-weight: 700; color: var(--accent); }
+  .kpi .lbl { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  @media (max-width: 640px) {
+    section { padding: 20px 16px; }
+    header h1 { font-size: 24px; }
+    .kpi-row { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="repo">PARIJAAT-13 / Flyrank-A.I &middot; github.io</div>
+  <h1>Ranking Content for Refresh Review with Observable Signals</h1>
+  <div class="subtitle">A decision-support model that flags declining content for human review — no titles, URLs, or keywords used</div>
+</header>
+
+<div class="container">
+
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<!-- SECTION 1: TITLE + ABSTRACT -->
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<section id="abstract">
+  <h2>Title &amp; Abstract</h2>
+  <p><strong>Title:</strong> Ranking Content for Refresh Review with Observable Signals — A Decision-Support Approach</p>
+  <div class="abstract-block">
+    <p><strong>Abstract.</strong> Content platforms must decide which pages to review for refresh, but editorial bandwidth is finite.
+    We build a ranked refresh-priority model for 30,000 anonymized content pages using only observable engagement signals
+    (visibility, freshness, position, click-through rate, session depth). The label is <code>trend_direction == "down"</code> —
+    a transparent, rule-based definition that makes the objective auditable. On a strict client-holdout split, a RandomForest
+    model achieves <strong>0.740 Precision@50</strong> — roughly 3&times; the transparent rule baseline at 0.240 — and produces
+    a 30,000-row ranked queue with 3,602 high-confidence rows ready for editorial review. The model is a decision-support aid,
+    not an automatic publishing gate. All figures are directional and derived from a 30k-row teaching slice of a larger warehouse.</p>
+  </div>
+  <p><span class="metric-pill">Precision@50: 0.740</span>
+  <span class="metric-pill">Baseline: 0.240</span>
+  <span class="metric-pill">High-confidence rows: 3,602</span>
+  <span class="metric-pill">Rows scored: 30,000</span>
+  <span class="metric-pill">Clients: 32</span></p>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<!-- SECTION 2: INTRODUCTION / PROBLEM STATEMENT -->
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<section id="introduction">
+  <h2>1. Introduction &amp; Problem Statement</h2>
+  <p>Large content libraries accumulate pages that lose engagement over time. A refresh workflow — updating stale titles,
+  refreshing multimedia, or expanding thin content — can recover impressions and sessions. But with thousands of pages,
+  editors need a principled way to decide <em>which</em> pages to review first.</p>
+  <p><strong>Research question.</strong> Given a page's observable engagement signals, can we rank pages by their
+  likelihood of being a refresh candidate, using only non-leaky features (i.e., features that would be available before
+  the refresh decision is made)?</p>
+  <p><strong>Decision it supports.</strong> A human reviewer should inspect the top of the ranked queue first. The model
+  is a decision-support aid, not an automatic publishing gate. Every recommendation is paired with reason codes so an
+  editor can understand <em>why</em> a page was flagged.</p>
+  <p><strong>Why it matters.</strong> The transparent rule baseline catches only 24% of declining rows in the top 50
+  recommendations. The best model raises that to 74% — a 3&times; improvement on the same holdout split — without
+  ever accessing a page's title, URL, or keyword text.</p>
+  <div class="kpi-row">
+    <div class="kpi"><div class="num">30k</div><div class="lbl">Rows scored</div></div>
+    <div class="kpi"><div class="num">54.2%</div><div class="lbl">Declining-label rate</div></div>
+    <div class="kpi"><div class="num">0.740</div><div class="lbl">Best Prec@50</div></div>
+    <div class="kpi"><div class="num">3,602</div><div class="lbl">High-confidence rows</div></div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<!-- SECTION 3: DATA -->
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<section id="data">
+  <h2>2. Data</h2>
+  <h3>Source and scope</h3>
+  <ul>
+    <li><strong>Release:</strong> <code>data/raw/content_refresh_anonymized.csv</code> — a bundled anonymized starter slice</li>
+    <li><strong>Size:</strong> 30,000 rows &times; 44 columns, 32 pseudonymized clients</li>
+    <li><strong>Window:</strong> trailing 90-day activity totals (GSC + GA4 style metrics)</li>
+    <li><strong>Public-safe:</strong> no client names, URLs, titles, keywords, or raw private queries</li>
+  </ul>
+  <h3>Label definition</h3>
+  <p>The binary label is derived from the trend column: <code>is_declining_label = (trend_direction == "down")</code>.
+  This yields 16,262 positive rows (54.2%). The trend columns themselves are <em>never</em> used as model features —
+  they are leakage guards.</p>
+  <h3>Feature set</h3>
+  <p>After preprocessing, the models consume <strong>52 columns</strong>:</p>
+  <ul>
+    <li><strong>18 numeric features</strong> — log1p-transformed heavy-tailed counts (impressions, clicks, sessions),
+      plus normalized rates and percentiles (CTR, scroll rate, engagement rate, avg position, search volume, competition, CPC)</li>
+    <li><strong>8 categorical features</strong> — one-hot encoded with an <code>unknown</code> level: content type,
+      main intent, competition level, age tier, freshness tier, word count tier, impression tier, position tier</li>
+  </ul>
+  <h3>Exclusions</h3>
+  <div class="warning">
+    <strong>W05 <code>baseline_score</code> regression is excluded.</strong> That notebook uses the baseline as its own
+    target, so MAE = 0 by construction. It is not a valid benchmark and is not used anywhere in this paper.
+  </div>
+  <h3>Trend direction distribution</h3>
+  <div class="chart-box"><svg xmlns="http://www.w3.org/2000/svg" width="960" height="520" viewBox="0 0 960 520">
+<rect width="100%" height="100%" fill="#ffffff"/>
+<text x="480.0" y="34" text-anchor="middle" font-family="Arial" font-size="24" fill="#16232a">Trend direction distribution</text>
+<text x="178" y="116.8" text-anchor="end" font-family="Arial" font-size="13" fill="#27343b">down</text>
+<rect x="190" y="70.0" width="730.0" height="72.0" fill="#B07AA1" rx="4"/>
+<text x="928.0" y="116.8" font-family="Arial" font-size="13" fill="#27343b">1.63e+04</text>
+<text x="178" y="198.8" text-anchor="end" font-family="Arial" font-size="13" fill="#27343b">stable</text>
+<rect x="190" y="152.0" width="267.6" height="72.0" fill="#B07AA1" rx="4"/>
+<text x="465.6" y="198.8" font-family="Arial" font-size="13" fill="#27343b">5.96e+03</text>
+<text x="178" y="280.8" text-anchor="end" font-family="Arial" font-size="13" fill="#27343b">up</text>
+<rect x="190" y="234.0" width="197.0" height="72.0" fill="#B07AA1" rx="4"/>
+<text x="395.0" y="280.8" font-family="Arial" font-size="13" fill="#27343b">4.39e+03</text>
+<text x="178" y="362.8" text-anchor="end" font-family="Arial" font-size="13" fill="#27343b">new</text>
+<rect x="190" y="316.0" width="100.4" height="72.0" fill="#B07AA1" rx="4"/>
+<text x="298.4" y="362.8" font-family="Arial" font-size="13" fill="#27343b">2.24e+03</text>
+<text x="178" y="444.8" text-anchor="end" font-family="Arial" font-size="13" fill="#27343b">flat</text>
+<rect x="190" y="398.0" width="51.7" height="72.0" fill="#B07AA1" rx="4"/>
+<text x="249.7" y="444.8" font-family="Arial" font-size="13" fill="#27343b">1.15e+03</text>
+</svg></div>
+  <div class="chart-caption">Figure 1. Distribution of trend_direction across the 30,000-row slice. "down" (declining) accounts for 54.2% of rows.</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<!-- SECTION 4: METHODOLOGY -->
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<section id="methodology">
+  <h2>3. Methodology</h2>
+  <h3>Baseline score</h3>
+  <p>The transparent rule baseline is a weighted sum of normalized, non-leaky components:</p>
+  <p><code>baseline_refresh_score = 0.40&middot;visibility_score + 0.30&middot;freshness_risk_score +
+  0.25&middot;position_opportunity_score + 0.05&middot;depth_gap_score</code></p>
+  <p>All components are percentile-rank or normalized values computed from observable signals.
+  The baseline achieves Precision@50 = 0.240 and ROC AUC = 0.627 on the same holdout split.</p>
+  <h3>Models</h3>
+  <table>
+    <tr><th>Model</th><th>Key hyperparameters</th><th>Random state</th></tr>
+    <tr><td>Logistic Regression</td><td>class_weight=balanced, max_iter=1000</td><td>42</td></tr>
+    <tr><td>Decision Tree</td><td>max_depth=5, min_samples_leaf=50</td><td>42</td></tr>
+    <tr><td>Random Forest</td><td>n_estimators=200, max_depth=10, min_samples_leaf=25</td><td>42</td></tr>
+  </table>
+  <h3>Validation design</h3>
+  <p><strong>Client-holdout split:</strong> shuffle the 32 pseudonymized clients, hold out ~20% (~6–7 clients) as the test set,
+  and train on the remainder. If client_holdout cannot be applied (e.g., insufficient clients), the pipeline falls back to
+  a stratified row-holdout split. This measures intra-client generalization — how well the model performs on content from
+  clients it has not seen during training.</p>
+  <ul>
+    <li>Train rows: 27,675 &nbsp;|&nbsp; Test rows: 2,325</li>
+    <li>Target positive rate: 0.542</li>
+    <li>Final score blend: <code>100 &times; (0.70 &middot; best_model_probability + 0.30 &middot; baseline_score_normalized)</code>, clipped to [0, 100]</li>
+  </ul>
+  <h3>Primary metric</h3>
+  <p><strong>Precision@50</strong> — the proportion of true declining rows among the top 50 recommended items.
+  This is the metric used to select the best model, because in a refresh workflow the reviewer can only act on a small
+  number of high-priority items. Secondary metrics are ROC AUC and average precision.</p>
+  <h3>Leakage checks</h3>
+  <ul>
+    <li><code>trend_direction</code> and <code>trend_pct</code> never enter the feature set</li>
+    <li><code>content_id</code> and <code>client_id</code> are used for grouping only</li>
+    <li>The label is computed <em>after</em> feature extraction, ensuring no temporal leakage</li>
+  </ul>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<!-- SECTION 5: RESULTS -->
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<section id="results">
+  <h2>4. Results</h2>
+  <h3>Model comparison on the same client-holdout split</h3>
+  <table>
+    <tr><th>Model</th><th>ROC AUC</th><th>Avg precision</th><th>Precision@50</th><th>Recall</th><th>F1</th></tr>
+    <tr><td>decision_tree</td><td>0.742</td><td>0.575</td><td>0.620</td><td>0.716</td><td>0.634</td></tr>
+    <tr><td>logistic_regression</td><td>0.700</td><td>0.522</td><td>0.400</td><td>0.567</td><td>0.566</td></tr>
+    <tr class="best"><td>random_forest</td><td>0.750</td><td>0.618</td><td>0.740</td><td>0.744</td><td>0.640</td></tr>
+    <tr><td>baseline_rules</td><td>0.627</td><td>0.468</td><td>0.240</td><td>&mdash;</td><td>&mdash;</td></tr>
+  </table>
+  <p>The RandomForest model wins on every metric. It beats the transparent rule baseline by
+  <strong>0.500 Precision@50</strong> — a 3.1&times; improvement on the same split. The Decision Tree is a strong
+  second at 0.620, confirming that the signal is captured well even by a shallow tree.</p>
+  <div class="kpi-row">
+    <div class="kpi"><div class="num">0.740</div><div class="lbl">RF Precision@50</div></div>
+    <div class="kpi"><div class="num">0.750</div><div class="lbl">RF ROC AUC</div></div>
+    <div class="kpi"><div class="num">3.1&times;</div><div class="lbl">vs baseline</div></div>
+    <div class="kpi"><div class="num">0.742</div><div class="lbl">DT Precision@50</div></div>
+  </div>
+  <h3>Top features</h3>
+  <p>Feature importances from the RandomForest model confirm that visibility and freshness dominate:</p>
+  <div class="chart-box"><svg xmlns="http://www.w3.org/2000/svg" width="960" height="520" viewBox="0 0 960 520">
+<rect width="100%" height="100%" fill="#ffffff"/>
+<text x="480.0" y="34" text-anchor="middle" font-family="Arial" font-size="24" fill="#16232a">Top model features</text>
+<text x="178" y="85.7" text-anchor="end" font-family="Arial" font-size="13" fill="#27343b">days_with_impressions</text>
+<rect x="190" y="70.0" width="115.4" height="24.2" fill="#4E79A7" rx="4"/>
+<text x="313.4" y="85.7" font-family="Arial" font-size="13" fill="#27343b">0.158</text>
+<text x="178" y="119.9" text-anchor="end" font-family="Arial" font-size="13" fill="#27343b">log_impressions_90d</text>
+<rect x="190" y="104.2" width="93.9" height="24.2" fill="#4E79A7" rx="4"/>
+<text x="291.9" y="119.9" font-family="Arial" font-size="13" fill="#27343b">0.129</text>
+<text x="178" y="154.0" text-anchor="end" font-family="Arial" font-size="13" fill="#27343b">avg_position</text>
+<rect x="190" y="138.3" width="79.7" height="24.2" fill="#4E79A7" rx="4"/>
+<text x="277.7" y="154.0" font-family="Arial" font-size="13" fill="#27343b">0.109</text>
+<text x="178" y="188.2" text-anchor="end" font-family="Arial" font-size="13" fill="#27343b">content_age_days</text>
+<rect x="190" y="172.5" width="69.5" height="24.2" fill="#4E79A7" rx="4"/>
+<text x="267.5" y="188.2" font-family="Arial" font-size="13" fill="#27343b">0.0952</text>
+<text x="178" y="222.4" text-anchor="end" font-family="Arial" font-size="13" fill="#27343b">char_count</text>
+<rect x="190" y="206.7" width="31.1" height="24.2" fill="#4E79A7" rx="4"/>
+<text x="229.1" y="222.4" font-family="Arial" font-size="13" fill="#27343b">0.0426</text>
+<text x="178" y="256.5" text-anchor="end" font-family="Arial" font-size="13" fill="#27343b">word_count</text>
+<rect x="190" y="240.8" width="28.9" height="24.2" fill="#4E79A7" rx="4"/>
+<text x="226.9" y="256.5" font-family="Arial" font-size="13" fill="#27343b">0.0396</text>
+<text x="178" y="290.7" text-anchor="end" font-family="Arial" font-size="13" fill="#27343b">log_clicks_90d</text>
+<rect x="190" y="275.0" width="25.2" height="24.2" fill="#4E79A7" rx="4"/>
+<text x="223.2" y="290.7" font-family="Arial" font-size="13" fill="#27343b">0.0345</text>
+<text x="178" y="324.9" text-anchor="end" font-family="Arial" font-size="13" fill="#27343b">ctr</text>
+<rect x="190" y="309.2" width="24.3" height="24.2" fill="#4E79A7" rx="4"/>
+<text x="222.3" y="324.9" font-family="Arial" font-size="13" fill="#27343b">0.0333</text>
+<text x="178" y="359.0" text-anchor="end" font-family="Arial" font-size="13" fill="#27343b">scroll_rate</text>
+<rect x="190" y="343.3" width="22.8" height="24.2" fill="#4E79A7" rx="4"/>
+<text x="220.8" y="359.0" font-family="Arial" font-size="13" fill="#27343b">0.0312</text>
+<text x="178" y="393.2" text-anchor="end" font-family="Arial" font-size="13" fill="#27343b">days_with_sessions</text>
+<rect x="190" y="377.5" width="20.4" height="24.2" fill="#4E79A7" rx="4"/>
+<text x="218.4" y="393.2" font-family="Arial" font-size="13" fill="#27343b">0.028</text>
+<text x="178" y="427.4" text-anchor="end" font-family="Arial" font-size="13" fill="#27343b">position_tier_top_3</text>
+<rect x="190" y="411.7" width="19.2" height="24.2" fill="#4E79A7" rx="4"/>
+<text x="217.2" y="427.4" font-family="Arial" font-size="13" fill="#27343b">0.0262</text>
+<text x="178" y="461.5" text-anchor="end" font-family="Arial" font-size="13" fill="#27343b">log_sessions_90d</text>
+<rect x="190" y="445.8" width="16.5" height="24.2" fill="#4E79A7" rx="4"/>
+<text x="214.5" y="461.5" font-family="Arial" font-size="13" fill="#27343b">0.0226</text>
+</svg></div>
+  <div class="chart-caption">Figure 2. Top 11 model features by mean decrease in impurity. Days with impressions, log impressions,
+  and average position account for more than 39% of the total importance.</div>
+  <table>
+    <tr><th>Feature</th><th>Importance</th><th>Feature</th><th>Importance</th></tr>
+    <tr><td>days_with_impressions</td><td>0.158</td><td>scroll_rate</td><td>0.031</td></tr>
+    <tr><td>log_impressions_90d</td><td>0.129</td><td>days_with_sessions</td><td>0.028</td></tr>
+    <tr><td>avg_position</td><td>0.109</td><td>position_tier_top_3</td><td>0.026</td></tr>
+    <tr><td>content_age_days</td><td>0.095</td><td>log_sessions_90d</td><td>0.023</td></tr>
+    <tr><td>char_count</td><td>0.043</td><td>age_tier_365+</td><td>0.023</td></tr>
+    <tr><td>word_count</td><td>0.040</td><td>days_since_last_update</td><td>0.021</td></tr>
+    <tr><td>log_clicks_90d</td><td>0.034</td><td>competition</td><td>0.008</td></tr>
+    <tr><td>ctr</td><td>0.033</td><td></td><td></td></tr>
+  </table>
+  <h3>Suggested action mix</h3>
+  <div class="chart-box"><svg xmlns="http://www.w3.org/2000/svg" width="960" height="520" viewBox="0 0 960 520">
+<rect width="100%" height="100%" fill="#ffffff"/>
+<text x="480.0" y="34" text-anchor="middle" font-family="Arial" font-size="24" fill="#16232a">Suggested action mix</text>
+<text x="178" y="116.8" text-anchor="end" font-family="Arial" font-size="13" fill="#27343b">monitor</text>
+<rect x="190" y="70.0" width="730.0" height="72.0" fill="#426B69" rx="4"/>
+<text x="928.0" y="116.8" font-family="Arial" font-size="13" fill="#27343b">1.31e+04</text>
+<text x="178" y="198.8" text-anchor="end" font-family="Arial" font-size="13" fill="#27343b">refresh</text>
+<rect x="190" y="152.0" width="456.9" height="72.0" fill="#426B69" rx="4"/>
+<text x="654.9" y="198.8" font-family="Arial" font-size="13" fill="#27343b">8.19e+03</text>
+<text x="178" y="280.8" text-anchor="end" font-family="Arial" font-size="13" fill="#27343b">refresh_and_review_ctr</text>
+<rect x="190" y="234.0" width="371.3" height="72.0" fill="#426B69" rx="4"/>
+<text x="569.3" y="280.8" font-family="Arial" font-size="13" fill="#27343b">6.65e+03</text>
+<text x="178" y="362.8" text-anchor="end" font-family="Arial" font-size="13" fill="#27343b">refresh_and_review_engagement</text>
+<rect x="190" y="316.0" width="111.2" height="72.0" fill="#426B69" rx="4"/>
+<text x="309.2" y="362.8" font-family="Arial" font-size="13" fill="#27343b">1.99e+03</text>
+<text x="178" y="444.8" text-anchor="end" font-family="Arial" font-size="13" fill="#27343b">expand_and_refresh</text>
+<rect x="190" y="398.0" width="4.6" height="72.0" fill="#426B69" rx="4"/>
+<text x="202.6" y="444.8" font-family="Arial" font-size="13" fill="#27343b">82</text>
+</svg></div>
+  <div class="chart-caption">Figure 3. Distribution of suggested actions across the ranked queue. The largest group is "monitor"
+  (low-confidence, periodic review), followed by "refresh" and "refresh_and_review_ctr".</div>
+  <h3>Confidence distribution</h3>
+  <div class="chart-box"><svg xmlns="http://www.w3.org/2000/svg" width="960" height="520" viewBox="0 0 960 520">
+<rect width="100%" height="100%" fill="#ffffff"/>
+<text x="480.0" y="34" text-anchor="middle" font-family="Arial" font-size="24" fill="#16232a">Refresh queue confidence</text>
+<text x="178" y="152.3" text-anchor="end" font-family="Arial" font-size="13" fill="#27343b">high</text>
+<rect x="190" y="70.0" width="175.3" height="126.7" fill="#6F4E7C" rx="4"/>
+<text x="373.3" y="152.3" font-family="Arial" font-size="13" fill="#27343b">3.6e+03</text>
+<text x="178" y="289.0" text-anchor="end" font-family="Arial" font-size="13" fill="#27343b">medium</text>
+<rect x="190" y="206.7" width="554.7" height="126.7" fill="#6F4E7C" rx="4"/>
+<text x="752.7" y="289.0" font-family="Arial" font-size="13" fill="#27343b">1.14e+04</text>
+<text x="178" y="425.7" text-anchor="end" font-family="Arial" font-size="13" fill="#27343b">low</text>
+<rect x="190" y="343.3" width="730.0" height="126.7" fill="#6F4E7C" rx="4"/>
+<text x="928.0" y="425.7" font-family="Arial" font-size="13" fill="#27343b">1.5e+04</text>
+</svg></div>
+  <div class="chart-caption">Figure 4. Confidence tiers in the final queue. High-confidence rows (final score &ge; p80 = 63.6)
+  total 3,602 and are the primary review targets.</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<!-- SECTION 6: LIMITATIONS -->
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<section id="limitations">
+  <h2>5. Limitations &amp; Honest Framing</h2>
+  <p>This work cannot claim the following:</p>
+  <ol>
+    <li><strong>Sample size.</strong> This is a 30k-row teaching slice of a much larger warehouse. Precision figures are
+    directional, not production-final.</li>
+    <li><strong>Temporal generalization.</strong> The client-holdout split measures intra-client generalization, not
+    performance on future months. No temporal validation was performed.</li>
+    <li><strong>No causal claims.</strong> The model observes correlations in observable signals; it does not prove that
+    the signals <em>cause</em> decline.</li>
+    <li><strong>Missingness.</strong> Categorical features are one-hot encoded with a single <code>unknown</code> level —
+    some missingness patterns may silently encode content type.</li>
+    <li><strong>Baseline scope.</strong> The baseline is a transparent hand-written rule, not a market-beating system.
+    The 3&times; improvement is measured against this specific rule on this specific slice.</li>
+    <li><strong>No titles/URLs/keywords.</strong> By design, the model uses only engagement signals. Adding textual or
+    structural page content would require different data pipelines and separate validation.</li>
+  </ol>
+  <p>Despite these limitations, the model provides a useful, auditable first pass for editorial review. The ranked queue
+  narrows 30,000 rows to 3,602 high-confidence candidates — a 88% reduction in review load.</p>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<!-- SECTION 7: RANKED RECOMMENDATIONS -->
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<section id="recommendations">
+  <h2>6. Ranked Recommendations</h2>
+  <p>Action playbook — what a person should do first, with reasons:</p>
+  <ol>
+    <li><strong>Inspect high-confidence rows first</strong> (final_refresh_score &ge; p80 = 63.6). These are the strongest
+    model-decline signals with volume — 3,602 rows.</li>
+    <li><strong>Check <code>refresh_and_review_ctr</code> rows</strong> — declining with demand but low CTR on a visible
+    page. Small edits may recover impressions; 6,654 rows in the queue.</li>
+    <li><strong>Review <code>refresh_and_review_engagement</code> rows</strong> — declining with demand and weak engagement
+    metrics. 1,993 rows.</li>
+    <li><strong><code>expand_and_refresh</code> rows</strong> are thin visible pages — consider adding content depth.
+    Only 82 rows.</li>
+    <li><strong><code>monitor</code> rows</strong> (low confidence) are not urgent; keep them on a periodic review cadence.
+    13,083 rows.</li>
+  </ol>
+  <h3>Top reason codes in the queue</h3>
+  <div class="chart-box"><svg xmlns="http://www.w3.org/2000/svg" width="960" height="520" viewBox="0 0 960 520">
+<rect width="100%" height="100%" fill="#ffffff"/>
+<text x="480.0" y="34" text-anchor="middle" font-family="Arial" font-size="24" fill="#16232a">Top refresh reason codes</text>
+<text x="178" y="87.7" text-anchor="end" font-family="Arial" font-size="13" fill="#27343b">declining_with_demand</text>
+<rect x="190" y="70.0" width="730.0" height="27.3" fill="#8C6BB1" rx="4"/>
+<text x="928.0" y="87.7" font-family="Arial" font-size="13" fill="#27343b">1.32e+04</text>
+<text x="178" y="125.0" text-anchor="end" font-family="Arial" font-size="13" fill="#27343b">visible_model_opportunity</text>
+<rect x="190" y="107.3" width="591.1" height="27.3" fill="#8C6BB1" rx="4"/>
+<text x="789.1" y="125.0" font-family="Arial" font-size="13" fill="#27343b">1.06e+04</text>
+<text x="178" y="162.3" text-anchor="end" font-family="Arial" font-size="13" fill="#27343b">low_ctr_visible_page</text>
+<rect x="190" y="144.5" width="541.7" height="27.3" fill="#8C6BB1" rx="4"/>
+<text x="739.7" y="162.3" font-family="Arial" font-size="13" fill="#27343b">9.76e+03</text>
+<text x="178" y="199.5" text-anchor="end" font-family="Arial" font-size="13" fill="#27343b">ctr_review_candidate</text>
+<rect x="190" y="181.8" width="541.7" height="27.3" fill="#8C6BB1" rx="4"/>
+<text x="739.7" y="199.5" font-family="Arial" font-size="13" fill="#27343b">9.76e+03</text>
+<text x="178" y="236.8" text-anchor="end" font-family="Arial" font-size="13" fill="#27343b">general_refresh_review</text>
+<rect x="190" y="219.1" width="506.0" height="27.3" fill="#8C6BB1" rx="4"/>
+<text x="704.0" y="236.8" font-family="Arial" font-size="13" fill="#27343b">9.12e+03</text>
+<text x="178" y="274.1" text-anchor="end" font-family="Arial" font-size="13" fill="#27343b">model_decline_risk</text>
+<rect x="190" y="256.4" width="467.7" height="27.3" fill="#8C6BB1" rx="4"/>
+<text x="665.7" y="274.1" font-family="Arial" font-size="13" fill="#27343b">8.43e+03</text>
+<text x="178" y="311.4" text-anchor="end" font-family="Arial" font-size="13" fill="#27343b">page_one_decay_risk</text>
+<rect x="190" y="293.6" width="392.8" height="27.3" fill="#8C6BB1" rx="4"/>
+<text x="590.8" y="311.4" font-family="Arial" font-size="13" fill="#27343b">7.08e+03</text>
+<text x="178" y="348.6" text-anchor="end" font-family="Arial" font-size="13" fill="#27343b">low_engagement_visible_page</text>
+<rect x="190" y="330.9" width="361.2" height="27.3" fill="#8C6BB1" rx="4"/>
+<text x="559.2" y="348.6" font-family="Arial" font-size="13" fill="#27343b">6.51e+03</text>
+<text x="178" y="385.9" text-anchor="end" font-family="Arial" font-size="13" fill="#27343b">engagement_review_candidate</text>
+<rect x="190" y="368.2" width="361.2" height="27.3" fill="#8C6BB1" rx="4"/>
+<text x="559.2" y="385.9" font-family="Arial" font-size="13" fill="#27343b">6.51e+03</text>
+<text x="178" y="423.2" text-anchor="end" font-family="Arial" font-size="13" fill="#27343b">thin_visible_page</text>
+<rect x="190" y="405.5" width="4.6" height="27.3" fill="#8C6BB1" rx="4"/>
+<text x="202.6" y="423.2" font-family="Arial" font-size="13" fill="#27343b">82</text>
+<text x="178" y="460.5" text-anchor="end" font-family="Arial" font-size="13" fill="#27343b">stale_visible_page</text>
+<rect x="190" y="442.7" width="0.9" height="27.3" fill="#8C6BB1" rx="4"/>
+<text x="198.9" y="460.5" font-family="Arial" font-size="13" fill="#27343b">17</text>
+</svg></div>
+  <div class="chart-caption">Figure 5. Most frequent reason codes assigned by the pipeline. "declining_with_demand" is the
+  dominant signal, followed by "visible_model_opportunity" and "low_ctr_visible_page".</div>
+  <h3>Top 10 queue preview</h3>
+  <table>
+    <tr><th>Rank</th><th>Score</th><th>Action</th><th>Impressions</th><th>Sessions</th><th>Trend</th></tr>
+    <tr><td>1</td><td>81.7</td><td>refresh_and_review_ctr</td><td>12,834</td><td>66</td><td>down</td></tr>
+    <tr><td>2</td><td>81.6</td><td>refresh_and_review_ctr</td><td>2,498</td><td>9</td><td>down</td></tr>
+    <tr><td>3</td><td>81.5</td><td>refresh_and_review_ctr</td><td>8,064</td><td>23</td><td>down</td></tr>
+    <tr><td>4</td><td>81.2</td><td>refresh_and_review_ctr</td><td>13,790</td><td>27</td><td>down</td></tr>
+    <tr><td>5</td><td>81.0</td><td>refresh_and_review_ctr</td><td>3,393</td><td>5</td><td>down</td></tr>
+    <tr><td>6</td><td>80.8</td><td>refresh_and_review_ctr</td><td>5,811</td><td>14</td><td>down</td></tr>
+    <tr><td>7</td><td>80.7</td><td>refresh_and_review_ctr</td><td>1,622</td><td>20</td><td>down</td></tr>
+    <tr><td>8</td><td>80.4</td><td>refresh</td><td>4,366</td><td>8</td><td>down</td></tr>
+    <tr><td>9</td><td>80.4</td><td>refresh_and_review_ctr</td><td>1,597</td><td>5</td><td>down</td></tr>
+    <tr><td>10</td><td>80.4</td><td>refresh</td><td>3,867</td><td>5</td><td>down</td></tr>
+  </table>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<!-- SECTION 8: REPRODUCIBILITY -->
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<section id="reproducibility">
+  <h2>7. Reproducibility</h2>
+  <p>The entire pipeline is deterministic under <code>random_state=42</code> and is documented in the repository.</p>
+  <h3>Canonical pipeline</h3>
+  <ol>
+    <li><code>scripts/01_prepare_features.py</code> — builds the feature vector from <code>data/raw/content_refresh_anonymized.csv</code></li>
+    <li><code>scripts/02_baseline_score.py</code> — computes the transparent rule baseline</li>
+    <li><code>scripts/03_train_model.py</code> — trains all three models with client-holdout split</li>
+    <li><code>scripts/04_evaluate_and_export.py</code> — evaluates, ranks, and exports the queue</li>
+    <li><code>scripts/05_build_pdf_report.py</code> — generates the PDF report</li>
+  </ol>
+  <p>Orchestrated via <code>scripts/run_all.py</code>. Re-running the pipeline from scratch reproduces all metrics exactly
+  because every stochastic step uses <code>random_state=42</code>.</p>
+  <h3>Committed artifacts</h3>
+  <ul>
+    <li><code>outputs/model_results.json</code> — full metrics for all models and the baseline</li>
+    <li><code>outputs/summary.json</code> — queue summary, confidence tiers, final score percentiles</li>
+    <li><code>outputs/refresh_queue.csv</code> — the complete 30,000-row ranked queue</li>
+    <li><code>outputs/charts/*.svg</code> — all five charts embedded in this paper</li>
+    <li><code>work/notebooks/capstone.ipynb</code> — end-to-end notebook that documents each section</li>
+    <li><code>docs/index.html</code> — this research paper</li>
+  </ul>
+  <p><strong>How to verify:</strong> clone the repository and run <code>python scripts/run_all.py</code>. The output metrics
+  should match the tables in Section 4 exactly. The notebook can be executed with
+  <code>jupyter nbconvert --execute --to notebook work/notebooks/capstone.ipynb</code>.</p>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<!-- SECTION 9: ACKNOWLEDGMENTS & DATA CREDIT -->
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<section id="acknowledgments">
+  <h2>8. Acknowledgments &amp; Data Credit</h2>
+  <p>This analysis uses anonymized, synthetic starter data provided for the FlyRank ML-11 capstone. No real client names,
+  URLs, titles, keywords, or raw private queries are used anywhere in this paper or the accompanying notebook.</p>
+  <p><strong>Data credit.</strong> The dataset is a synthetic representation of Google Search Console and Google Analytics
+  engagement data, prepared for educational and research purposes. All metrics reported here are derived from this synthetic
+  dataset and are intended to demonstrate the methodology, not to represent production performance.</p>
+  <p><strong>Reference.</strong> For additional context on the data dictionary and column definitions, see the repository's
+  <code>docs/data-dictionary.md</code> and the public-facing research overview at
+  <a class="link" href="https://flyrank.ai" target="_blank">https://flyrank.ai</a>.</p>
+  <p><strong>Repository.</strong> <a class="link" href="https://github.com/PARIJAAT-13/Flyrank-A.I" target="_blank">github.com/PARIJAAT-13/Flyrank-A.I</a></p>
+  <div class="warning">
+    <strong>ML-12 closing cells (completed in the notebook):</strong>
+    <ul>
+      <li><strong>5-minute demo outline:</strong> Question &amp; stakes (30s), Data &amp; label (45s), Method (45s),
+      Result (60s), Limitations (30s), Next steps (30s).</li>
+      <li><strong>Social-post cut:</strong> "3&times; better at catching declining content. Our RandomForest model hits 74%
+      of declining rows in the top 50 recommendations — vs 24% for the transparent rule baseline. No titles, URLs, or keywords
+      used — only observable engagement signals. Directional, decision-support only."</li>
+      <li><strong>3-sentence employer-facing summary:</strong> Built a ranked refresh-priority model for 30k anonymized content
+      pages using only observable engagement signals. RandomForest achieves 0.740 Precision@50 — roughly 3&times; the transparent
+      rule baseline — validated on a client-holdout split with strict leakage guards. Output is a 30k-row ranked queue with 3,602
+      high-confidence rows ready for editorial review.</li>
+    </ul>
+  </div>
+</section>
+
+</div><!-- /container -->
+
+<footer>
+  FlyRank ML-11 Capstone &middot; Research Paper &middot;
+  Generated from the canonical pipeline with <code>random_state=42</code> &middot;
+  <a class="link" href="https://github.com/PARIJAAT-13/Flyrank-A.I">Repository</a> &middot;
+  <a class="link" href="https://flyrank.ai">FlyRank</a>
+</footer>
+
+</body>
+</html>
